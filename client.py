@@ -9,6 +9,7 @@ import time
 
 SERVER_HOST = "192.168.1.107"
 SERVER_PORT = 5000
+server = (SERVER_HOST,SERVER_PORT)
 
 connected = [] ## LISTA DE CONECTADOS. GUARDA APENAS OS ENDEREÇOS CONECTADOS AO ENDEREÇO DO SOCKET INICIALZADO (NÃO GUARDA TODOS OS ENDEREÇOS CONECTADOS AO SISTEMA)
 
@@ -19,7 +20,19 @@ def ReceiveData(sock):
             data,addr = sock.recvfrom(1024)
             dataDecoded = data.decode()
 
-            if dataDecoded == "connect": # OUTRO LADO CONECTOU COM ESSE ENDEREÇO
+            if dataDecoded == "rebuild-tree":
+                print("reconectando com o servidor")
+                connected.clear()
+                sock.sendto("connected_list".encode(),server) ## pede ao servidor uma lista com todos os endereços que participam do sistema
+                connecteds, server_addr = sock.recvfrom(1024)
+                connecteds = pickle.loads(connecteds)
+                Connect(sock,connecteds)
+
+            elif dataDecoded == "keep-alive":
+                print("vericacao")
+                sock.sendto("keep-alive".encode(),addr)
+
+            elif dataDecoded == "connect": # OUTRO LADO CONECTOU COM ESSE ENDEREÇO
                 print(f"CONEXAO ESTABELECIDA COM {addr}")
                 connected.append(addr)
 
@@ -53,11 +66,7 @@ def ReceiveData(sock):
             pass
 
 
-def Connect(sock: socket):
-    sock.sendto("connected_list".encode(),server) ## pede ao servidor uma lista com todos os endereços que participam do sistema
-
-    connecteds, server_addr = sock.recvfrom(1024)
-    connecteds = pickle.loads(connecteds)
+def Connect(sock: socket, connecteds):
     if len(connecteds) == 0: ## nenhum endereço retornado -> simplesmente diz ao servidor que se conectou
         sock.sendto("connected".encode(),server)
     else: ## lista de endereços retonada -> se conectar ao endereço com menor latência
@@ -91,7 +100,7 @@ def Disconnect(sock: socket):
     
 
 
-server = (SERVER_HOST,SERVER_PORT)
+
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 HOST = "192.168.1.107"
 PORT = int(sys.argv[1])
@@ -100,7 +109,11 @@ print(f"socket iniciado no endereço {sock.getsockname()}")
 
 name = input('Please write your name here: ')
 
-Connect(sock)
+sock.sendto("connected_list".encode(),server) ## pede ao servidor uma lista com todos os endereços que participam do sistema
+connecteds, server_addr = sock.recvfrom(1024)
+connecteds = pickle.loads(connecteds)
+
+Connect(sock, connecteds)
 
 threading.Thread(target=ReceiveData,args=(sock,)).start()
 while True:

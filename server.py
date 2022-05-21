@@ -13,7 +13,7 @@ keepAlive = []
 contador = 0
 recvPackets = queue.Queue()
 
-SERVER_HOST = "192.168.1.107"
+SERVER_HOST = "191.52.64.158"
 SERVER_PORT = 5000
 
 def RecvDataMainLoop(sock,recvPackets):
@@ -24,6 +24,9 @@ def RecvDataMainLoop(sock,recvPackets):
             if data == "connected":
                 clients.add(addr)
                 sock.sendto("client-connected".encode(),(SERVER_HOST,SERVER_PORT+1))
+            if data == "connected_list":
+                print(f"<SERVER>: Mandando lista de endereços para {addr}")
+                sock.sendto(pickle.dumps(clients),addr)
             else:
                 recvPackets.put((data,addr))
         except:
@@ -45,8 +48,10 @@ def mainLoop():
             clients.clear()
             for c in backup:
                 try:
+                    print(f"enviando msg para reconectar para {c}")
                     s.sendto("rebuild-tree".encode(),c)
                     s.sendto(pickle.dumps(clients),addr)
+                    time.sleep(1)
                 except:
                     pass
 
@@ -55,11 +60,6 @@ def mainLoop():
             print(f"<SERVER>: Adicionando endereço {addr} na lista de endereços")
             clients.add(addr)
             s.sendto("client-connected".encode(),(SERVER_HOST,SERVER_PORT+1))
-            continue
-
-        if data.endswith("connected_list"):
-            print(f"<SERVER>: Mandando lista de endereços para {addr}")
-            s.sendto(pickle.dumps(clients),addr)
             continue
 
         if data.endswith('qqq'):

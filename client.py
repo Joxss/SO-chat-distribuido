@@ -7,7 +7,7 @@ import os
 import pickle
 import time
 
-SERVER_HOST = "192.168.1.107"
+SERVER_HOST = "191.52.64.158"
 SERVER_PORT = 5000
 server = (SERVER_HOST,SERVER_PORT)
 
@@ -102,7 +102,7 @@ def Disconnect(sock: socket):
 
 
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-HOST = "192.168.1.107"
+HOST = "191.52.64.158"
 PORT = int(sys.argv[1])
 sock.bind((HOST,PORT))
 print(f"socket iniciado no endereço {sock.getsockname()}")

@@ -1,4 +1,5 @@
 from pydoc import cli
+from re import I
 import socket
 import threading
 import queue
@@ -16,14 +17,14 @@ recvPackets = queue.Queue()
 SERVER_HOST = "191.52.64.158"
 SERVER_PORT = 5000
 
-def RecvDataMainLoop(sock,recvPackets):
+def RecvDataMainLoop(sock,recvPackets, server_host):
     while True:
         try:
             data,addr = sock.recvfrom(1024)
             data = data.decode()
             if data == "connected":
                 clients.add(addr)
-                sock.sendto("client-connected".encode(),(SERVER_HOST,SERVER_PORT+1))
+                sock.sendto("client-connected".encode(),(server_host,SERVER_PORT+1))
             if data == "connected_list":
                 print(f"<SERVER>: Mandando lista de endereços para {addr}")
                 sock.sendto(pickle.dumps(clients),addr)
@@ -32,12 +33,12 @@ def RecvDataMainLoop(sock,recvPackets):
         except:
             pass
 
-def mainLoop():
-    print('Rodando server no endereço -> '+str(SERVER_HOST))
+def mainLoop(server_host):
+    print('Rodando server no endereço -> '+ str(server_host))
     s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    s.bind((SERVER_HOST,SERVER_PORT))
+    s.bind((server_host,SERVER_PORT))
 
-    threading.Thread(target=RecvDataMainLoop,args=(s,recvPackets)).start()
+    threading.Thread(target=RecvDataMainLoop,args=(s,recvPackets, server_host)).start()
 
     while True:
         data,addr = recvPackets.get()
@@ -59,7 +60,7 @@ def mainLoop():
         if data.endswith("connected") and addr not in clients:
             print(f"<SERVER>: Adicionando endereço {addr} na lista de endereços")
             clients.add(addr)
-            s.sendto("client-connected".encode(),(SERVER_HOST,SERVER_PORT+1))
+            s.sendto("client-connected".encode(),(server_host,SERVER_PORT+1))
             continue
 
         if data.endswith('qqq'):
@@ -85,10 +86,9 @@ def RecvDataCheckConnected(socket):
         except:
             pass
 
-
-def checkConnectedLoop():
+def checkConnectedLoop(server_host):
     socketKeepAlive = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    socketKeepAlive.bind((SERVER_HOST,SERVER_PORT+1))
+    socketKeepAlive.bind((server_host,SERVER_PORT+1))
 
     threading.Thread(target=RecvDataCheckConnected,args=(socketKeepAlive,)).start()
     while True:
@@ -104,9 +104,18 @@ def checkConnectedLoop():
         time.sleep(5)
 
         if len(keepAlive) != len(clients):
-            socketKeepAlive.sendto("rebuild-tree".encode(),(SERVER_HOST,SERVER_PORT))
+            socketKeepAlive.sendto("rebuild-tree".encode(),(server_host,SERVER_PORT))
             print("DEU ERRO")
 
-threading.Thread(target=mainLoop).start()
-threading.Thread(target=checkConnectedLoop).start()
-#Serevr Code Ends Here'
+def main():
+    
+    if len(sys.argv) < 1:
+        print("Argumentos insuficientes!")
+        print("Uso: <ip>")
+        os.exit(1)
+    
+    threading.Thread(target=mainLoop, args=(sys.argv[1],)).start()
+    threading.Thread(target=checkConnectedLoop, args=(sys.argv[1],)).start()
+
+if __name__ == "__main__":
+    main()

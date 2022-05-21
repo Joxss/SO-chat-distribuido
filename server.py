@@ -14,10 +14,12 @@ keepAlive = []
 contador = 0
 recvPackets = queue.Queue()
 
-SERVER_HOST = "191.52.64.158"
 SERVER_PORT = 5000
 
 def RecvDataMainLoop(sock,recvPackets, server_host):
+    """
+        Ouve mensagens referentes a novas conexões no sistema distribuido
+    """
     while True:
         try:
             data,addr = sock.recvfrom(1024)
@@ -34,6 +36,9 @@ def RecvDataMainLoop(sock,recvPackets, server_host):
             pass
 
 def mainLoop(server_host):
+    """
+        Funcao principal do servidor
+    """
     print('Rodando server no endereço -> '+ str(server_host))
     s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     s.bind((server_host,SERVER_PORT))
@@ -71,6 +76,9 @@ def mainLoop(server_host):
     s.close()
 
 def RecvDataCheckConnected(socket):
+    """
+        Funcao utilizada em thread em conjunto com a CheckConnectedLoop para ouvir as mensagens dos clientes
+    """
     while True:
         try:
             data,addr = socket.recvfrom(1024)
@@ -87,6 +95,10 @@ def RecvDataCheckConnected(socket):
             pass
 
 def checkConnectedLoop(server_host):
+    """
+        Envia uma mensagem a todos os nós e verifica se todos responderam. Caso algum nó não responda
+        a uma mensagem para reconstruir a arvore é enviada aos nós remanescentes.
+    """
     socketKeepAlive = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     socketKeepAlive.bind((server_host,SERVER_PORT+1))
 

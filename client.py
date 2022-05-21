@@ -17,7 +17,7 @@ connected = []
 
 def ReceiveData(sock,server):
     """
-        Código da thread que fica rodando recebendo mensagens
+        Código utilizado em thread no qual fica ouvindo as mensagens.
     """
     while True:
         try:
@@ -71,6 +71,9 @@ def ReceiveData(sock,server):
 
 def Connect(sock: socket, connecteds, server):
     """
+        Faz a iteracao pela lista de connectados e testa a latencia com cada nó. Ao encontrar a
+        melhor latência estabelece uma conexao com esse nó. Caso não exista nós na lista, apenas
+        informa ao servidor e aguarda futuras conexões.
     """
     if len(connecteds) == 0: ## nenhum endereço retornado -> simplesmente diz ao servidor que se conectou
         sock.sendto("connected".encode(),server)

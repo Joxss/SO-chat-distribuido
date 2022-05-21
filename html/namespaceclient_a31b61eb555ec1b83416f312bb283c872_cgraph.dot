@@ -1,0 +1,12 @@
+digraph "client.ReceiveData"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="client.ReceiveData",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="client.Connect",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespaceclient.html#a9e500b63e57420dd6a49715ed4ea9779",tooltip=" "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="client.Disconnect",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespaceclient.html#ab79f309ca58cdc893d21297853dc7820",tooltip=" "];
+}

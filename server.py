@@ -14,6 +14,7 @@ keepAlive = []
 contador = 0
 recvPackets = queue.Queue()
 
+
 SERVER_PORT = 5000
 
 def RecvDataMainLoop(sock,recvPackets, server_host):
@@ -85,7 +86,7 @@ def RecvDataCheckConnected(socket):
             data = data.decode()
             if data == "keep-alive":
                 keepAlive.append(addr)
-                print(f"recebeu de {addr}")
+                #print(f"recebeu de {addr}")
             elif data == "client-connected":
                 keepAlive.append(addr)
 
@@ -105,11 +106,11 @@ def checkConnectedLoop(server_host):
     threading.Thread(target=RecvDataCheckConnected,args=(socketKeepAlive,)).start()
     while True:
         time.sleep(5)
-        print("TESTANDO....")
+        #print("TESTANDO....")
         try:
             keepAlive.clear()
             for c in clients:
-                print(f"enviando para {c}")
+                #print(f"enviando para {c}")
                 socketKeepAlive.sendto("keep-alive".encode(),c)
         except:
             print("ERRO DURANTE VERIFICAÇÃO. DEIXADO PARA PROXIMA")
@@ -117,7 +118,54 @@ def checkConnectedLoop(server_host):
 
         if len(keepAlive) != len(clients):
             socketKeepAlive.sendto("rebuild-tree".encode(),(server_host,SERVER_PORT))
-            print("DEU ERRO")
+            print("Erro. Refazendo árvore")
+
+def recvDataMutualExclusion(server_host):
+    regiaoCritica = queue.Queue()
+    filaDeEspera = queue.Queue()
+    addrComAcesso = ""
+
+    sockMutualExclusion = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sockMutualExclusion.bind((server_host,SERVER_PORT+2))
+    print("Socket exclusão mutua iniciado")
+
+    while True:
+        try:
+            data,addr = sockMutualExclusion.recvfrom(1024)
+            data = data.decode()
+            if data == ":accessCriticalRegion:":
+                print(f"accessCritialRegion: {addr}")
+                if addrComAcesso == "":
+                    print("SIM")
+                    addrComAcesso = addr
+                    sockMutualExclusion.sendto("accessGranted".encode(),addrComAcesso)
+                else:
+                    print("NAO")
+                    filaDeEspera.put(addr)
+            elif data == ":leaveCriticalRegion:" and addr == addrComAcesso:
+                print(f"leaveCriticalRegion: {addr}")
+                if filaDeEspera.qsize() == 0:
+                    addrComAcesso = ""
+                else:
+                    addrComAcesso = filaDeEspera.get()
+                    sockMutualExclusion.sendto("acessGranted".encode(),addrComAcesso)
+            
+            elif data[0:5] == ":put:" and addr == addrComAcesso:
+                print(f"put: {addr}")
+                regiaoCritica.put(data[5:])
+
+            elif data == ":get:" and addr == addrComAcesso:
+                print(f"get: {addr}")
+                if regiaoCritica.qsize() != 0:
+                    msg = regiaoCritica.get()
+                    sockMutualExclusion.sendto(msg.encode(),addrComAcesso)
+                else:
+                    sockMutualExclusion.sendto("critical region empty".encode(),addrComAcesso)     
+            else:
+                print(data)  
+        except Exception as e:
+            print(e)
+            pass
 
 def main():
     
@@ -128,6 +176,7 @@ def main():
     
     threading.Thread(target=mainLoop, args=(sys.argv[1],)).start()
     threading.Thread(target=checkConnectedLoop, args=(sys.argv[1],)).start()
+    threading.Thread(target=recvDataMutualExclusion, args=(sys.argv[1],)).start()
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,4 @@
+from http import server
 import os
 import sys
 import socket
@@ -7,8 +8,10 @@ import time
 import queue
 import random
 
-SERVER_HOST = "191.52.64.158"
+SERVER_HOST = ""
 SERVER_PORT = 5000
+
+exclusionStatus = "not-waiting"
 
 """
 LISTA DE CONECTADOS. GUARDA APENAS OS ENDEREÇOS CONECTADOS AO ENDEREÇO DO SOCKET INICIALZADO (NÃO GUARDA TODOS OS ENDEREÇOS CONECTADOS AO SISTEMA)
@@ -33,7 +36,7 @@ def ReceiveData(sock,server):
                 Connect(sock,connecteds, server)
 
             elif dataDecoded == "keep-alive":
-                print("vericacao")
+                #print("vericacao")
                 sock.sendto("keep-alive".encode(),addr)
 
             elif dataDecoded == "connect": # OUTRO LADO CONECTOU COM ESSE ENDEREÇO
@@ -108,6 +111,37 @@ def Disconnect(sock: socket):
     for c in connected:
         sock.sendto("disconnect-done".encode(),c) ## envia mensagem para os demais endereços sinalizando saida do sistema
 
+def mutualExclusionClient(sock: socket, server):
+    global exclusionStatus
+    while(True):
+        msg, addr = sock.recvfrom(1024)
+        msg = msg.decode()
+        if msg == ":accessCriticalRegion:" :
+            sock.sendto(msg.encode(),server)
+            print("Aguardando acesso da região crítica.")
+            exclusionStatus = "waiting"
+            data, addr = sock.recvfrom(1024)
+            print("Região crítica acessada.")
+            exclusionStatus = "granted"
+
+        elif msg == ":leaveCriticalRegion:":
+            sock.sendto(msg.encode(), server)
+            exclusionStatus = "not-waiting"
+            print("Saindo da região crítica.")
+
+        elif msg[0:5] == ":put:":
+            sock.sendto(msg.encode(), server)
+            print("Inserindo valor na região critica.")
+
+        elif msg == ":get:":
+            sock.sendto(msg.encode(), server)
+            data, addr = sock.recvfrom(1024)
+            data = data.decode()
+            if data == "critical region empty":
+                print("Buffer região crítica vazio.")
+            else:
+                print(f"Valor obtido da região crítica: {data}")
+
 def main():
     # Validando as entradas por CMD
 
@@ -116,16 +150,18 @@ def main():
         print("Uso: <seu_ip> <sua_porta> <ip_servidor>")
         os.exit(1)
 
-    clientHost = sys.argv[1]
-    clientPort = sys.argv[2]
-    serverHost = sys.argv[3]
+    HOST = sys.argv[1]
+    PORT = int(sys.argv[2])
+    SERVER_HOST = sys.argv[3]
 
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    HOST = clientHost
-    PORT = int(clientPort)
     sock.bind((HOST,PORT))
 
-    server = (serverHost,SERVER_PORT)
+    sockMutualExclusion = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sockMutualExclusion.bind((HOST,PORT+1))
+
+    server = (SERVER_HOST,SERVER_PORT)
+    serverMutual = (SERVER_HOST,SERVER_PORT+2)
 
     print(f"Socket iniciado no endereço {sock.getsockname()}")
 
@@ -138,14 +174,27 @@ def main():
     Connect(sock, connecteds, server)
 
     threading.Thread(target=ReceiveData,args=(sock,server)).start()
+    threading.Thread(target=mutualExclusionClient,args=(sockMutualExclusion,serverMutual)).start()
     
     while True:
         data = input()
         if data == 'qqq': ## SAIR DO SISTEMA -> MANDA MENSAGEM PARA SI MESMO PARA A THREAD CHAMAR A FUNÇÃO DE DESCONECTAR
             sock.sendto("disconnect-self".encode(),(HOST,PORT))
             break
+
+        elif data == ":accessCriticalRegion:":
+            if exclusionStatus == "not-waiting":
+                sockMutualExclusion.sendto(data.encode(),(HOST,PORT+1))
+            continue
+
+        elif data == ":leaveCriticalRegion:" or data[0:5] == ":put:" or data == ":get:":
+            if exclusionStatus == "granted":
+                sockMutualExclusion.sendto(data.encode(),(HOST,PORT+1))
+            continue
+
         elif data=='':
             continue
+
         data = '['+name+']' + '->'+ data
         for c in connected: ## repassa a mensagem digitada pelo usuário para todos os endereços na lista de conectados
             sock.sendto(data.encode(),c)

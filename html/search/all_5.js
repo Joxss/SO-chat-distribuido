@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['server_15',['server',['../namespaceserver.html',1,'']]],
-  ['server_2epy_16',['server.py',['../server_8py.html',1,'']]],
-  ['server_5fhost_17',['SERVER_HOST',['../namespaceclient.html#af28664b184c0123f155803ef2c138291',1,'client']]],
-  ['server_5fport_18',['SERVER_PORT',['../namespaceclient.html#a25bae662e4f4598c1f02cae96c259950',1,'client.SERVER_PORT()'],['../namespaceserver.html#ae6cfb4cb568b59cbf082d53005584e45',1,'server.SERVER_PORT()']]]
+  ['receivedata_13',['ReceiveData',['../namespaceclient.html#a31b61eb555ec1b83416f312bb283c872',1,'client']]],
+  ['recvdatacheckconnected_14',['RecvDataCheckConnected',['../namespaceserver.html#ab5f4922b3d44b8f23b3a749797e7a805',1,'server']]],
+  ['recvdatamainloop_15',['RecvDataMainLoop',['../namespaceserver.html#a238b1cfc12d498c0d77c7c1dadc9557b',1,'server']]],
+  ['recvdatamutualexclusion_16',['recvDataMutualExclusion',['../namespaceserver.html#ad88fa001a72db7447a385615340e4d9f',1,'server']]],
+  ['recvpackets_17',['recvPackets',['../namespaceserver.html#a23f9255d4fd61f6108851f54bb110368',1,'server']]]
 ];

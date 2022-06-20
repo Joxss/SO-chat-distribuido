@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keepalive_8',['keepAlive',['../namespaceserver.html#a11aaa361d22f77f7a6603dadcedebebc',1,'server']]]
+  ['exclusionstatus_8',['exclusionStatus',['../namespaceclient.html#a514570b9a4b85c07ccd5e74e24e5a350',1,'client']]]
 ];

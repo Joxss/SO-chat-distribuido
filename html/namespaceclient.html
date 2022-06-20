@@ -78,15 +78,19 @@ Functions</h2></td></tr>
 <tr class="separator:a9e500b63e57420dd6a49715ed4ea9779"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab79f309ca58cdc893d21297853dc7820"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#ab79f309ca58cdc893d21297853dc7820">Disconnect</a> (socket sock)</td></tr>
 <tr class="separator:ab79f309ca58cdc893d21297853dc7820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36683f096b0f3343a9342b51b1a42400"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#a36683f096b0f3343a9342b51b1a42400">mutualExclusionClient</a> (socket sock, server)</td></tr>
+<tr class="separator:a36683f096b0f3343a9342b51b1a42400"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18d2f0bd3df369370bdb40b86fe2892b"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#a18d2f0bd3df369370bdb40b86fe2892b">main</a> ()</td></tr>
 <tr class="separator:a18d2f0bd3df369370bdb40b86fe2892b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af28664b184c0123f155803ef2c138291"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#af28664b184c0123f155803ef2c138291">SERVER_HOST</a> = &quot;191.52.64.158&quot;</td></tr>
+<tr class="memitem:af28664b184c0123f155803ef2c138291"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#af28664b184c0123f155803ef2c138291">SERVER_HOST</a> = &quot;&quot;</td></tr>
 <tr class="separator:af28664b184c0123f155803ef2c138291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25bae662e4f4598c1f02cae96c259950"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#a25bae662e4f4598c1f02cae96c259950">SERVER_PORT</a> = 5000</td></tr>
 <tr class="separator:a25bae662e4f4598c1f02cae96c259950"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a514570b9a4b85c07ccd5e74e24e5a350"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#a514570b9a4b85c07ccd5e74e24e5a350">exclusionStatus</a> = &quot;not-waiting&quot;</td></tr>
+<tr class="separator:a514570b9a4b85c07ccd5e74e24e5a350"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d9ca278738f5e43d81970af750e641d"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceclient.html#a8d9ca278738f5e43d81970af750e641d">connected</a> = []</td></tr>
 <tr class="separator:a8d9ca278738f5e43d81970af750e641d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -126,7 +130,7 @@ Variables</h2></td></tr>
     melhor latência estabelece uma conexao com esse nó. Caso não exista nós na lista, apenas
     informa ao servidor e aguarda futuras conexões.
 </pre> 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00072">72</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00075">75</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -154,7 +158,7 @@ Here is the caller graph for this function:</div>
     Lógica: manda a lista de conectados para o primeiro endereço da lista, tal endereço se conecta com todos os demais endereços da lista.
     Os demais endereços simplesmente removem o endereço que está saindo do sistema de suas listas de conectados;
 </pre> 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00096">96</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00099">99</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -178,12 +182,43 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00111">111</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00149">149</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespaceclient_a18d2f0bd3df369370bdb40b86fe2892b_cgraph.png" border="0" usemap="#anamespaceclient_a18d2f0bd3df369370bdb40b86fe2892b_cgraph" alt=""/></div>
 </div>
+
+</div>
+</div>
+<a id="a36683f096b0f3343a9342b51b1a42400"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36683f096b0f3343a9342b51b1a42400">&#9670;&nbsp;</a></span>mutualExclusionClient()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def client.mutualExclusionClient </td>
+          <td>(</td>
+          <td class="paramtype">socket&#160;</td>
+          <td class="paramname"><em>sock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>server</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">    Escuta e envia as mensagens de acesso e manipulação da região crítica
+</pre> 
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00114">114</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 
 </div>
 </div>
@@ -214,7 +249,7 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 <pre class="fragment">    Código utilizado em thread no qual fica ouvindo as mensagens.
 </pre> 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00018">18</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00021">21</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -236,7 +271,23 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00016">16</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00019">19</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+
+</div>
+</div>
+<a id="a514570b9a4b85c07ccd5e74e24e5a350"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a514570b9a4b85c07ccd5e74e24e5a350">&#9670;&nbsp;</a></span>exclusionStatus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string client.exclusionStatus = &quot;not-waiting&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00014">14</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 
 </div>
 </div>
@@ -247,12 +298,12 @@ Here is the call graph for this function:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">string client.SERVER_HOST = &quot;191.52.64.158&quot;</td>
+          <td class="memname">string client.SERVER_HOST = &quot;&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00010">10</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00011">11</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 
 </div>
 </div>
@@ -268,14 +319,14 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00011">11</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="client_8py_source.html#l00012">12</a> of file <a class="el" href="client_8py_source.html">client.py</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2022 13:46:33 for SO - Sistema Distribuido by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Jun 19 2022 20:02:45 for SO - Sistema Distribuido by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

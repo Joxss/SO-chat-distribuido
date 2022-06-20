@@ -112,6 +112,10 @@ def Disconnect(sock: socket):
         sock.sendto("disconnect-done".encode(),c) ## envia mensagem para os demais endereços sinalizando saida do sistema
 
 def mutualExclusionClient(sock: socket, server):
+    """
+        Escuta e envia as mensagens de acesso e manipulação da região crítica
+    """
+    
     global exclusionStatus
     while(True):
         msg, addr = sock.recvfrom(1024)

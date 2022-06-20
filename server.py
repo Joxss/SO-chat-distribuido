@@ -120,7 +120,12 @@ def checkConnectedLoop(server_host):
             socketKeepAlive.sendto("rebuild-tree".encode(),(server_host,SERVER_PORT))
             print("Erro. Refazendo árvore")
 
+
 def recvDataMutualExclusion(server_host):
+    """
+        Estabiliza uma nova porta para comunicações relacionadas à exclusão mútua.
+        Lida e trata as requisições de acesso e controle da região crítica.
+    """
     regiaoCritica = queue.Queue()
     filaDeEspera = queue.Queue()
     addrComAcesso = ""
